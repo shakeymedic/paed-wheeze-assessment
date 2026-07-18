@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wheeze Assessment — Children | ED Clinical Tool</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#1B3A5C;
+    --navy-dark:#132A44;
+    --teal:#01696F;
+    --teal-dark:#014D52;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', sans-serif; }
+
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: #f1f5f9; }
+  ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
+
+  label { display:block; font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:.02em; color:#475569; margin-bottom:0.25rem; }
+
+  input[type="text"], input[type="number"], input[type="time"], input[type="date"], select, textarea {
+    width:100%; padding:0.5rem 0.6rem; font-size:0.875rem; border-radius:0.4rem;
+    border:1px solid #94a3b8; font-weight:600; color:#1e293b; background:#fff;
+    outline:none; transition:all .15s;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--teal); box-shadow: 0 0 0 3px rgba(1,105,111,0.18);
+  }
+  textarea { font-weight:500; }
+
+  .section-card {
+    background:#fff; border-radius:0.75rem; border:1px solid #cbd5e1;
+    box-shadow:0 1px 3px 0 rgb(0 0 0 / .06); overflow:hidden;
+  }
+  .section-header {
+    background: var(--navy);
+    color:#fff; padding:0.85rem 1.25rem; font-size:1rem; font-weight:800;
+    display:flex; align-items:center; justify-content:space-between; gap:.5rem;
+  }
+  .section-header .subtag { font-size:0.65rem; font-weight:700; text-transform:uppercase; color:#9fc2d8; letter-spacing:.05em; }
+  .section-body { padding:1.25rem; display:flex; flex-direction:column; gap:1rem; }
+
+  .sub-card { background:#f8fafc; border:1px solid #e2e8f0; border-radius:0.5rem; padding:0.9rem; }
+
+  .nav-pill {
+    display:inline-block; padding:0.3rem 0.85rem; font-size:0.72rem; font-weight:700;
+    border-radius:9999px; border:1px solid #cbd5e1; white-space:nowrap; color:#334155;
+    background:#fff; transition:all .15s;
+  }
+  .nav-pill:hover { background:#e6f5f6; border-color: var(--teal); color: var(--teal-dark); }
+
+  .btn { display:inline-flex; align-items:center; justify-content:center; gap:.4rem; font-weight:700; font-size:0.78rem; padding:0.5rem 0.9rem; border-radius:0.5rem; transition:all .15s; cursor:pointer; border:1px solid transparent; }
+  .btn:active { transform: translateY(1px); }
+  .btn-teal { background: var(--teal); color:#fff; border-color: var(--teal-dark); }
+  .btn-teal:hover { background: var(--teal-dark); }
+  .btn-navy { background: var(--navy); color:#fff; border-color: var(--navy-dark); }
+  .btn-navy:hover { background: var(--navy-dark); }
+  .btn-outline { background:#fff; color:#334155; border-color:#cbd5e1; }
+  .btn-outline:hover { background:#f1f5f9; }
+  .btn-red { background:#dc2626; color:#fff; border-color:#991b1b; }
+  .btn-red:hover { background:#b91c1c; }
+  .bg-blue-600 { background-color:#2563eb; }
+  .bg-green-600 { background-color:#16a34a; }
+
+  .checkbox-row, .radio-row { display:flex; align-items:center; gap:.5rem; font-size:0.8rem; font-weight:600; color:#334155; cursor:pointer; }
+  input[type="checkbox"], input[type="radio"] { width:1.05rem; height:1.05rem; accent-color: var(--teal); flex-shrink:0; }
+
+  .flag-red { color:#b91c1c !important; font-weight:800; }
+  .flag-amber { color:#b45309 !important; font-weight:800; }
+  .badge-red { background:#fee2e2; border:1px solid #fca5a5; color:#991b1b; padding:0.15rem 0.5rem; border-radius:0.3rem; font-size:0.68rem; font-weight:800; text-transform:uppercase; }
+  .badge-amber { background:#fef3c7; border:1px solid #fcd34d; color:#92400e; padding:0.15rem 0.5rem; border-radius:0.3rem; font-size:0.68rem; font-weight:800; text-transform:uppercase; }
+
+  .severity-card { border-width:3px; border-radius:0.6rem; padding:0.9rem; background:#fff; }
+  .sev-mildmod { border-color:#16a34a; }
+  .sev-severe { border-color:#c2410c; }
+  .sev-lifethreat { border-color:#dc2626; }
+  .sev-title-mildmod { color:#15803d; }
+  .sev-title-severe { color:#9a3412; }
+  .sev-title-lifethreat { color:#b91c1c; }
+
+  .redflag-box { background:#fef2f2; border:2px solid #fca5a5; border-radius:0.5rem; padding:0.7rem; }
+
+  .rich-output {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size:0.82rem; line-height:1.45; color:#1e293b; background:#f8fafc;
+    border:1px solid #cbd5e1; border-radius:0.5rem; padding:1rem;
+    min-height:26rem; max-height:60vh; overflow-y:auto; white-space:pre-wrap;
+  }
+  .rich-output b, .rich-output strong { color:#0f172a; }
+
+  .scroll-mt-32 { scroll-margin-top: 8rem; }
+
+  #severity-banner { transition: all .2s; }
+
+  @media print {
+    @page { margin: 1cm; size: A4 portrait; }
+    body { background:#fff; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    .no-print { display:none !important; }
+    .section-card { break-inside:avoid; border:1px solid #999 !important; box-shadow:none !important; margin-bottom:0.6rem; }
+    #app-grid { display:block !important; }
+    #epr-col { display:none !important; }
+  }
+</style>
+</head>
+<body class="bg-slate-100 text-slate-900 antialiased pb-16">
+
+  <header class="bg-white shadow-sm sticky top-0 z-50 border-b border-slate-300 no-print">
+    <div class="max-w-[1400px] mx-auto px-4 py-2.5 flex flex-wrap justify-between items-center gap-2 border-b border-slate-100">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg flex items-center justify-center text-white font-black text-lg" style="background: var(--navy);">🫁</div>
+        <div>
+          <h1 class="text-lg md:text-xl font-black leading-none" style="color: var(--navy);">Wheeze Assessment — Children</h1>
+          <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">BTS/SIGN 2024 / NICE NG80 · Partners in Paediatrics 2025-28</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 flex-wrap">
+        <p id="autosave-indicator" class="hidden sm:flex text-xs text-green-600 font-bold items-center gap-1 mr-1">
+          <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Auto-saved
+        </p>
+        <span class="text-[10px] font-bold text-slate-400 border border-slate-300 rounded px-1.5 py-0.5 mr-1">v1.0</span>
+        <button type="button" id="copy-rich-text-btn" onclick="copyRichText()" class="btn bg-blue-600 text-white border-blue-800 hover:bg-blue-700">📋 Copy Rich Text</button>
+        <button type="button" id="print-btn" class="btn btn-navy">🖨️ Print</button>
+        <button type="button" id="reset-btn" class="btn btn-red">🗑️ Reset</button>
+      </div>
+    </div>
+
+    <div class="bg-slate-50/90 backdrop-blur">
+      <div class="max-w-[1400px] mx-auto px-4 py-1.5 flex items-center gap-1.5 overflow-x-auto" style="scrollbar-width:none;">
+        <span class="text-[10px] font-bold uppercase text-slate-400 mr-1 whitespace-nowrap">Jump to:</span>
+        <a href="#sec-1" class="nav-pill">1. Patient</a>
+        <a href="#sec-2" class="nav-pill">2. History</a>
+        <a href="#sec-3" class="nav-pill">3. Severity</a>
+        <a href="#sec-4" class="nav-pill">4. Examination</a>
+        <a href="#sec-5" class="nav-pill">5. Differential</a>
+        <a href="#sec-6" class="nav-pill">6. Treatment</a>
+        <a href="#sec-7" class="nav-pill">7. Investigations</a>
+        <a href="#sec-8" class="nav-pill">8. Response</a>
+        <a href="#sec-9" class="nav-pill">9. Disposition</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-[1400px] mx-auto px-4 py-6">
+    <div id="app-grid" style="display:grid; grid-template-columns: 1fr 320px; gap:1.25rem; align-items:start;">
+
+      <div style="min-width:0; display:flex; flex-direction:column; gap:1.5rem;">
+
+        <div class="hidden print-header text-center border-b-2 pb-3 mb-2" style="border-color: var(--navy);">
+          <h1 class="text-2xl font-black" style="color: var(--navy);">Wheeze Assessment — Children</h1>
+          <p class="text-xs font-bold text-slate-500">BTS/SIGN British Guideline on Asthma (2024) / NICE NG80 / Partners in Paediatrics 2025-28</p>
+        </div>
+
+        <form id="wheeze-form" onsubmit="return false;" class="flex flex-col gap-6">
+
+          <!-- SECTION 1: PATIENT DETAILS -->
+          <div id="sec-1" class="section-card scroll-mt-32">
+            <div class="section-header">
+              <span>1. Patient Details</span>
+              <span class="subtag">Demographics</span>
+            </div>
+            <div class="section-body">
+              <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="md:col-span-2">
+                  <label for="pt-name">Patient Name</label>
+                  <input type="text" id="pt-name" placeholder="Full name">
+                </div>
+                <div>
+                  <label for="pt-dob">Date of Birth</label>
+                  <input type="date" id="pt-dob">
+                </div>
+                <div>
+                  <label for="pt-age">Age (calculated)</label>
+                  <input type="text" id="pt-age" placeholder="auto" readonly class="bg-slate-100 font-bold">
+                </div>
+                <div>
+                  <label for="pt-weight">Weight (kg)</label>
+                  <input type="number" id="pt-weight" step="0.1" placeholder="kg" class="font-bold">
+                </div>
+                <div>
+                  <label for="pt-gender">Gender</label>
+                  <select id="pt-gender">
+                    <option value="">Select…</option>
+                    <option>Male</option>
+                    <option>Female</option>
+                    <option>Other / Not specified</option>
+                  </select>
+                </div>
+                <div class="md:col-span-2">
+                  <label for="pt-allergy">Allergy Status</label>
+                  <input type="text" id="pt-allergy" placeholder="NKDA / details…">
+                </div>
+              </div>
+
+              <div class="sub-card">
+                <label class="mb-2">Known Asthmatic?</label>
+                <div class="flex gap-6 mb-3">
+                  <label class="radio-row"><input type="radio" name="known-asthmatic" value="Yes"> Yes</label>
+                  <label class="radio-row"><input type="radio" name="known-asthmatic" value="No" checked> No</label>
+                </div>
+                <div id="asthmatic-details" class="hidden grid grid-cols-1 md:grid-cols-3 gap-4 pt-3 border-t border-slate-200">
+                  <div>
+                    <label for="asthma-years">Years Since Diagnosis</label>
+                    <input type="text" id="asthma-years" placeholder="e.g. 3 years">
+                  </div>
+                  <div>
+                    <label for="usual-preventer">Usual Preventer</label>
+                    <input type="text" id="usual-preventer" placeholder="e.g. Clenil 100mcg BD">
+                  </div>
+                  <div>
+                    <label for="usual-reliever">Usual Reliever</label>
+                    <input type="text" id="usual-reliever" placeholder="e.g. Salbutamol PRN">
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label for="current-meds">Current Medications</label>
+                <textarea id="current-meds" rows="2" placeholder="List current medications…"></textarea>
+              </div>
+              <div>
+                <label for="presenting-complaint">Presenting Complaint</label>
+                <textarea id="presenting-complaint" rows="2" placeholder="Presenting complaint…"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION 2: HISTORY -->
+          <div id="sec-2" class="section-card scroll-mt-32">
+            <div class="section-header">
+              <span>2. History</span>
+              <span class="subtag">Onset & Triggers</span>
+            </div>
+            <div class="section-body">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label for="duration-symptoms">Duration of Symptoms</label>
+                  <input type="text" id="duration-symptoms" placeholder="e.g. 2 days">
+                </div>
+                <div>
+                  <label for="time-onset">Time of Onset</label>
+                  <input type="time" id="time-onset">
+                </div>
+                <div>
+                  <label class="mb-2">Preceding URTI?</label>
+                  <div class="flex gap-4 mt-2">
+                    <label class="radio-row"><input type="radio" name="preceding-urti" value="Yes"> Yes</label>
+                    <label class="radio-row"><input type="radio" name="preceding-urti" value="No"> No</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="sub-card">
+                <label class="mb-2">Trigger Identified</label>
+                <div class="flex flex-wrap gap-4">
+                  <label class="checkbox-row"><input type="checkbox" class="trigger-cb" value="Exercise"> Exercise</label>
+                  <label class="checkbox-row"><input type="checkbox" class="trigger-cb" value="Allergen"> Allergen</label>
+                  <label class="checkbox-row"><input type="checkbox" class="trigger-cb" value="Cold air"> Cold air</label>
+                  <label class="checkbox-row"><input type="checkbox" class="trigger-cb" value="Infection"> Infection</label>
+                  <label class="checkbox-row"><input type="checkbox" class="trigger-cb" value="Unknown"> Unknown</label>
+                  <label class="checkbox-row"><input type="checkbox" class="trigger-cb" value="Other" id="trigger-other-cb"> Other</label>
+                </div>
+                <input type="text" id="trigger-other-text" placeholder="Specify other trigger…" class="hidden mt-2">
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="sub-card">
+                  <label class="mb-2">Previous A&E / Hospital Visits for Wheeze?</label>
+                  <div class="flex gap-4 mb-2">
+                    <label class="radio-row"><input type="radio" name="prev-visits" value="Yes"> Yes</label>
+                    <label class="radio-row"><input type="radio" name="prev-visits" value="No"> No</label>
+                  </div>
+                  <div id="prev-visits-count-wrap" class="hidden">
+                    <label for="prev-visits-count">Number in Last 12 Months</label>
+                    <input type="number" id="prev-visits-count" min="0" placeholder="0">
+                  </div>
+                </div>
+
+                <div class="redflag-box">
+                  <label class="mb-2 text-red-800">🚩 Previous ITU Admission / Ventilation?</label>
+                  <div class="flex gap-4">
+                    <label class="radio-row"><input type="radio" name="prev-itu" value="Yes" id="prev-itu-yes"> <span class="text-red-700">Yes</span></label>
+                    <label class="radio-row"><input type="radio" name="prev-itu" value="No"> No</label>
+                  </div>
+                  <p id="prev-itu-alert" class="hidden mt-2 text-xs font-black text-red-700 uppercase">⚠ RED FLAG — High risk patient</p>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="sub-card">
+                  <label class="mb-2">Reliever Used Prior to Attendance?</label>
+                  <div class="flex gap-4 mb-2">
+                    <label class="radio-row"><input type="radio" name="reliever-prior" value="Yes"> Yes</label>
+                    <label class="radio-row"><input type="radio" name="reliever-prior" value="No"> No</label>
+                  </div>
+                  <div id="reliever-doses-wrap" class="hidden">
+                    <label for="reliever-doses">Doses in Last Hour</label>
+                    <input type="number" id="reliever-doses" min="0" placeholder="0">
+                  </div>
+                </div>
+
+                <div class="sub-card">
+                  <label class="mb-2">Regular Preventer Adherence</label>
+                  <div class="flex flex-wrap gap-4">
+                    <label class="radio-row"><input type="radio" name="preventer-adherence" value="Good"> Good</label>
+                    <label class="radio-row"><input type="radio" name="preventer-adherence" value="Variable"> Variable</label>
+                    <label class="radio-row"><input type="radio" name="preventer-adherence" value="Poor"> Poor</label>
+                    <label class="radio-row"><input type="radio" name="preventer-adherence" value="Not prescribed"> Not prescribed</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="mb-2">Smoking in Household?</label>
+                  <div class="flex gap-4">
+                    <label class="radio-row"><input type="radio" name="household-smoking" value="Yes"> Yes</label>
+                    <label class="radio-row"><input type="radio" name="household-smoking" value="No"> No</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="sub-card">
+                <label class="mb-2">Other Symptoms</label>
+                <div class="flex flex-wrap gap-4">
+                  <label class="checkbox-row"><input type="checkbox" class="othersym-cb" value="Fever"> Fever</label>
+                  <label class="checkbox-row"><input type="checkbox" class="othersym-cb" value="Cough"> Cough</label>
+                  <label class="checkbox-row"><input type="checkbox" class="othersym-cb" value="Rhinorrhoea"> Rhinorrhoea</label>
+                  <label class="checkbox-row"><input type="checkbox" class="othersym-cb" value="Rash"> Rash</label>
+                  <label class="checkbox-row"><input type="checkbox" class="othersym-cb" value="Food recently ingested"> Food recently ingested</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION 3: SEVERITY ASSESSMENT -->
+          <div id="sec-3" class="section-card scroll-mt-32">
+            <div class="section-header">
+              <span>3. Severity Assessment</span>
+              <span class="subtag">Partners in Paediatrics 2025-28</span>
+            </div>
+            <div class="section-body">
+
+              <div class="bg-amber-50 border-2 border-amber-300 rounded-lg p-3">
+                <p class="text-xs font-bold text-amber-900">⚠ Patients with severe or life-threatening attacks may not be distressed and may not have all these abnormalities. Presence of <u>ANY ONE</u> criterion should alert the doctor.</p>
+              </div>
+
+              <div id="severity-banner" class="rounded-lg p-4 border-2 text-center bg-slate-50 border-slate-300">
+                <p class="text-xs font-bold uppercase text-slate-500 mb-1">Calculated Severity (worst criterion checked)</p>
+                <p id="severity-banner-text" class="text-2xl font-black text-slate-400">NOT YET ASSESSED</p>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+                <div class="severity-card sev-mildmod">
+                  <div class="font-black text-sm uppercase mb-2 sev-title-mildmod">🟢 Mild / Moderate</div>
+                  <div class="flex flex-col gap-1.5">
+                    <label class="checkbox-row"><input type="checkbox" class="sev-cb" data-level="mildmod" value="SpO2 >92% in air"> SpO2 &gt;92% in air</label>
+                    <label class="checkbox-row"><input type="checkbox" class="sev-cb" data-level="mildmod" value="PEFR >50% (age ≥5yr)"> PEFR &gt;50% (age ≥5yr)</label>
+                    <label class="checkbox-row"><input type="checkbox" class="sev-cb" data-level="mildmod" value="Speaks in complete sentences or feeding"> Speaks in complete sentences or feeding</label>
+                    <label class="checkbox-row"><input type="checkbox" class="sev-cb" data-level="mildmod" value="No features of severe asthma"> No features of severe asthma</label>
+                    <label class="checkbox-row"><input type="checkbox" class="sev-cb" data-level="mildmod" value="Normal vital signs"> Normal vital signs</label>
+                  </div>
+                </div>
+
+                <div class="severity-card sev-severe">
+                  <div class="font-black text-sm uppercase mb-2 sev-title-severe">🟧 Severe</div>
+                  <div class="flex flex-col gap-1.5">
+                    <label class="checkbox-row"><input type="checkbox" class="sev-cb" data-level="severe" value="Too breathless to talk/feed/eat"> Too breathless to talk/feed/eat</label>
+                    <label class="checkbox-row"><input type="checkbox" class="sev-cb" data-level="severe" value="Tachypnoea (<5yr >40, 5-11yr >30, 12-18yr >25/min)"> Tachypnoea (&lt;5yr &gt;40, 5-11yr &gt;30, 12-18yr &gt;25/min)</label>
+                    <label class="checkbox-row"><input type="checkbox" class="sev-cb" data-level="severe" value="Tachycardia (<5yr >140, 5-11yr >125, 12-18yr >110/min)"> Tachycardia (&lt;5yr &gt;140, 5-11yr &gt;125, 12-18yr &gt;110/min)</label>
+                    <label class="checkbox-row"><input type="checkbox" class="sev-cb" data-level="severe" value="Accessory muscles, subcostal + intercostal recession, flaring alae nasi"> Accessory muscles, subcostal + intercostal recession, flaring alae nasi</label>
+                    <label class="checkbox-row"><input type="checkbox" class="sev-cb" data-level="severe" value="SpO2 <92%"> SpO2 &lt;92%</label>
+                    <label class="checkbox-row"><input type="checkbox" class="sev-cb" data-level="severe" value="PEFR 30-50% (age ≥5yr)"> PEFR 30-50% (age ≥5yr)</label>
+                  </div>
+                </div>
+
+                <div class="severity-card sev-lifethreat">
+                  <div class="font-black text-sm uppercase mb-2 sev-title-lifethreat">🔴 Life-Threatening</div>
+                  <div class="flex flex-col gap-1.5">
+                    <label class="checkbox-row"><input type="checkbox" class="sev-cb" data-level="lifethreat" value="SpO2 <92% in air and/or cyanosis/pallor"> <span class="font-bold">SpO2 &lt;92% in air and/or cyanosis/pallor</span></label>
+                    <label class="checkbox-row"><input type="checkbox" class="sev-cb" data-level="lifethreat" value="Decreased air entry / silent chest"> <span class="font-bold">Decreased air entry / silent chest</span></label>
+                    <label class="checkbox-row"><input type="checkbox" class="sev-cb" data-level="lifethreat" value="Poor respiratory effort"> <span class="font-bold">Poor respiratory effort</span></label>
+                    <label class="checkbox-row"><input type="checkbox" class="sev-cb" data-level="lifethreat" value="Altered conscious level"> <span class="font-bold">Altered conscious level</span></label>
+                    <label class="checkbox-row"><input type="checkbox" class="sev-cb" data-level="lifethreat" value="Irritable / exhausted"> <span class="font-bold">Irritable / exhausted</span></label>
+                    <label class="checkbox-row"><input type="checkbox" class="sev-cb" data-level="lifethreat" value="PEFR ≤30%"> <span class="font-bold">PEFR ≤30%</span></label>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION 4: EXAMINATION FINDINGS -->
+          <div id="sec-4" class="section-card scroll-mt-32">
+            <div class="section-header">
+              <span>4. Examination Findings</span>
+              <span class="subtag">Observations</span>
+            </div>
+            <div class="section-body">
+
+              <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                  <label for="ex-spo2">SpO2 (%)</label>
+                  <input type="number" id="ex-spo2" min="0" max="100" placeholder="%">
+                  <p id="spo2-flag" class="text-xs font-bold mt-1"></p>
+                </div>
+                <div>
+                  <label for="ex-rr">Respiratory Rate</label>
+                  <input type="number" id="ex-rr" min="0" placeholder="breaths/min">
+                  <p id="rr-note" class="text-[10px] text-slate-500 font-semibold mt-1">Norms: &lt;5yr &lt;40, 5-11yr &lt;30, 12-18yr &lt;25</p>
+                </div>
+                <div>
+                  <label for="ex-hr">Heart Rate</label>
+                  <input type="number" id="ex-hr" min="0" placeholder="bpm">
+                  <p id="hr-note" class="text-[10px] text-slate-500 font-semibold mt-1">Norms: &lt;5yr &lt;140, 5-11yr &lt;125, 12-18yr &lt;110</p>
+                </div>
+                <div>
+                  <label for="ex-temp">Temperature (°C)</label>
+                  <input type="number" id="ex-temp" step="0.1" placeholder="°C">
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="md:col-span-1">
+                  <label for="ex-pefr">PEFR if Able (% predicted/best, age ≥5yr)</label>
+                  <input type="number" id="ex-pefr" min="0" max="100" placeholder="%">
+                  <p id="pefr-flag" class="text-xs font-bold mt-1"></p>
+                </div>
+              </div>
+
+              <div class="sub-card">
+                <label class="mb-2">Auscultation Findings</label>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div>
+                    <span class="text-[10px] font-bold uppercase text-slate-500 block mb-1">Wheeze</span>
+                    <div class="flex flex-wrap gap-3">
+                      <label class="radio-row"><input type="radio" name="ausc-wheeze" value="Expiratory"> Expiratory</label>
+                      <label class="radio-row"><input type="radio" name="ausc-wheeze" value="Inspiratory"> Inspiratory</label>
+                      <label class="radio-row"><input type="radio" name="ausc-wheeze" value="Both"> Both</label>
+                      <label class="radio-row"><input type="radio" name="ausc-wheeze" value="None"> None</label>
+                    </div>
+                  </div>
+                  <div>
+                    <span class="text-[10px] font-bold uppercase text-slate-500 block mb-1">Reduced Air Entry</span>
+                    <div class="flex flex-wrap gap-3">
+                      <label class="radio-row"><input type="radio" name="ausc-rae" value="Yes"> Yes</label>
+                      <label class="radio-row"><input type="radio" name="ausc-rae" value="No"> No</label>
+                    </div>
+                  </div>
+                  <div>
+                    <span class="text-[10px] font-bold uppercase text-slate-500 block mb-1">Crackles</span>
+                    <div class="flex flex-wrap gap-3">
+                      <label class="radio-row"><input type="radio" name="ausc-crackles" value="Yes"> Yes</label>
+                      <label class="radio-row"><input type="radio" name="ausc-crackles" value="No"> No</label>
+                    </div>
+                  </div>
+                  <div>
+                    <span class="text-[10px] font-bold uppercase text-red-600 block mb-1">Silent Chest 🚩</span>
+                    <div class="flex flex-wrap gap-3">
+                      <label class="radio-row"><input type="radio" name="ausc-silent" value="Yes" id="silent-chest-yes"> <span class="text-red-700 font-bold">Yes</span></label>
+                      <label class="radio-row"><input type="radio" name="ausc-silent" value="No"> No</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="sub-card">
+                <label class="mb-2">Work of Breathing</label>
+                <div class="flex flex-wrap gap-4">
+                  <label class="radio-row"><input type="radio" name="work-breathing" value="None"> None</label>
+                  <label class="radio-row"><input type="radio" name="work-breathing" value="Mild"> Mild</label>
+                  <label class="radio-row"><input type="radio" name="work-breathing" value="Moderate"> Moderate</label>
+                  <label class="radio-row"><input type="radio" name="work-breathing" value="Severe"> Severe</label>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <label class="checkbox-row sub-card !py-2"><input type="checkbox" id="ex-subcostal"> Subcostal recession</label>
+                <label class="checkbox-row sub-card !py-2"><input type="checkbox" id="ex-intercostal"> Intercostal recession</label>
+                <label class="checkbox-row sub-card !py-2"><input type="checkbox" id="ex-trachealtug"> Tracheal tug</label>
+                <label class="checkbox-row sub-card !py-2"><input type="checkbox" id="ex-nasalflare"> Nasal flaring / flaring alae nasi</label>
+                <label class="checkbox-row sub-card !py-2"><input type="checkbox" id="ex-headbob"> Head bobbing</label>
+                <label class="checkbox-row sub-card !py-2"><input type="checkbox" id="ex-accessory"> Accessory muscle use</label>
+                <label class="checkbox-row sub-card !py-2 !bg-red-50 !border-red-300"><input type="checkbox" id="ex-cyanosis"> <span class="text-red-700 font-bold">Cyanosis 🚩</span></label>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION 5: DIFFERENTIAL DIAGNOSIS -->
+          <div id="sec-5" class="section-card scroll-mt-32">
+            <div class="section-header">
+              <span>5. Differential Diagnosis</span>
+              <span class="subtag">Most Likely</span>
+            </div>
+            <div class="section-body">
+              <div class="sub-card">
+                <label class="mb-2">Most Likely Diagnosis</label>
+                <div class="flex flex-col gap-2">
+                  <label class="radio-row"><input type="radio" name="differential" value="Viral-induced wheeze (age <5 typically)"> Viral-induced wheeze (age &lt;5 typically)</label>
+                  <label class="radio-row"><input type="radio" name="differential" value="Acute asthma attack"> Acute asthma attack</label>
+                  <label class="radio-row"><input type="radio" name="differential" value="Bronchiolitis (age <2, typically RSV)"> Bronchiolitis (age &lt;2, typically RSV)</label>
+                  <label class="radio-row"><input type="radio" name="differential" value="Foreign body inhalation"> Foreign body inhalation</label>
+                  <label class="radio-row"><input type="radio" name="differential" value="Anaphylaxis"> Anaphylaxis</label>
+                  <label class="radio-row"><input type="radio" name="differential" value="Croup (predominantly stridor)"> Croup (predominantly stridor)</label>
+                  <label class="radio-row"><input type="radio" name="differential" value="Pneumonia with wheeze"> Pneumonia with wheeze</label>
+                  <label class="radio-row"><input type="radio" name="differential" value="Other" id="differential-other-cb"> Other</label>
+                </div>
+                <input type="text" id="differential-other-text" placeholder="Specify other diagnosis…" class="hidden mt-2">
+              </div>
+              <div>
+                <label for="differential-notes">Clinician Notes on Differentials</label>
+                <textarea id="differential-notes" rows="3" placeholder="Clinical reasoning…"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION 6: TREATMENT GIVEN -->
+          <div id="sec-6" class="section-card scroll-mt-32">
+            <div class="section-header">
+              <span>6. Treatment Given</span>
+              <span class="subtag">Partners in Paediatrics 2025-28, pp.44-49</span>
+            </div>
+            <div class="section-body">
+
+              <div id="treatment-severity-banner" class="rounded-lg p-3 border-2 text-center bg-slate-50 border-slate-300">
+                <p class="text-xs font-bold uppercase text-slate-500">Current Severity</p>
+                <p id="treatment-severity-text" class="text-xl font-black text-slate-400">NOT YET ASSESSED</p>
+              </div>
+
+              <!-- Salbutamol -->
+              <div class="sub-card">
+                <label class="mb-2 text-sm" style="color: var(--teal-dark);">Salbutamol Nebulised <span class="text-slate-400 font-normal normal-case">(driven by 6-8 L/min O2)</span></label>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <span class="text-[10px] font-bold uppercase text-slate-500 block mb-1">Route</span>
+                    <div class="flex flex-col gap-1">
+                      <label class="radio-row"><input type="radio" name="salb-route" value="Spacer+MDI"> Spacer + MDI</label>
+                      <label class="radio-row"><input type="radio" name="salb-route" value="Nebulised"> Nebulised</label>
+                      <label class="radio-row"><input type="radio" name="salb-route" value="IV"> IV</label>
+                    </div>
+                  </div>
+                  <div>
+                    <label for="salb-dose">Dose <span class="text-slate-400">(auto-suggested)</span></label>
+                    <input type="text" id="salb-dose" placeholder="auto-calculated / editable">
+                  </div>
+                  <div>
+                    <label for="salb-time">Time First Dose Given</label>
+                    <input type="time" id="salb-time">
+                  </div>
+                </div>
+                <p class="text-[10px] text-slate-500 font-semibold mt-1">Guideline doses: &lt;5yr 2.5mg | 5-11yr 2.5-5mg | ≥12yr 5mg</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3 pt-3 border-t border-slate-200">
+                  <div>
+                    <span class="text-[10px] font-bold uppercase text-slate-500 block mb-1">Response to First Dose</span>
+                    <div class="flex gap-3 flex-wrap">
+                      <label class="radio-row"><input type="radio" name="salb-response" value="Complete"> Complete</label>
+                      <label class="radio-row"><input type="radio" name="salb-response" value="Partial"> Partial</label>
+                      <label class="radio-row"><input type="radio" name="salb-response" value="None"> None</label>
+                    </div>
+                  </div>
+                  <div>
+                    <label for="salb-repeat">Repeat Doses Given</label>
+                    <input type="number" id="salb-repeat" min="0" placeholder="0">
+                  </div>
+                  <div>
+                    <span class="text-[10px] font-bold uppercase text-slate-500 block mb-1">Frequency</span>
+                    <div class="flex gap-3 flex-wrap">
+                      <label class="radio-row"><input type="radio" name="salb-freq" value="every 20min"> q20min</label>
+                      <label class="radio-row"><input type="radio" name="salb-freq" value="every 1hr"> q1hr</label>
+                      <label class="radio-row"><input type="radio" name="salb-freq" value="PRN"> PRN</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Ipratropium -->
+              <div class="sub-card">
+                <label class="mb-2 text-sm" style="color: var(--teal-dark);">Ipratropium Bromide (Atrovent) Nebulised <span class="text-slate-400 font-normal normal-case">(moderate/severe)</span></label>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <span class="text-[10px] font-bold uppercase text-slate-500 block mb-1">Given?</span>
+                    <div class="flex gap-4">
+                      <label class="radio-row"><input type="radio" name="ipra-given" value="Yes"> Yes</label>
+                      <label class="radio-row"><input type="radio" name="ipra-given" value="No"> No</label>
+                    </div>
+                  </div>
+                  <div>
+                    <label for="ipra-dose">Dose <span class="text-slate-400">(auto)</span></label>
+                    <input type="text" id="ipra-dose" placeholder="250mcg <12yr / 500mcg ≥12yr">
+                  </div>
+                  <div>
+                    <label for="ipra-time">Time Given</label>
+                    <input type="time" id="ipra-time">
+                  </div>
+                </div>
+                <p class="text-[10px] text-slate-500 font-semibold mt-1">&lt;12yr: 250mcg (max 1mg/day) | ≥12yr: 500mcg (max 2mg/day)</p>
+              </div>
+
+              <!-- Steroids -->
+              <div class="sub-card">
+                <label class="mb-2 text-sm" style="color: var(--teal-dark);">Oral Prednisolone / IV Hydrocortisone</label>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                  <div>
+                    <span class="text-[10px] font-bold uppercase text-slate-500 block mb-1">Steroids Given?</span>
+                    <div class="flex gap-4">
+                      <label class="radio-row"><input type="radio" name="steroid-given" value="Yes"> Yes</label>
+                      <label class="radio-row"><input type="radio" name="steroid-given" value="No"> No</label>
+                    </div>
+                  </div>
+                  <div>
+                    <span class="text-[10px] font-bold uppercase text-slate-500 block mb-1">Route</span>
+                    <div class="flex gap-4">
+                      <label class="radio-row"><input type="radio" name="steroid-route" value="Oral"> Oral</label>
+                      <label class="radio-row"><input type="radio" name="steroid-route" value="IV"> IV</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label for="steroid-drug">Drug</label>
+                    <select id="steroid-drug">
+                      <option value="">Select…</option>
+                      <option value="Prednisolone">Prednisolone</option>
+                      <option value="Hydrocortisone">Hydrocortisone</option>
+                      <option value="Dexamethasone">Dexamethasone</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label for="steroid-dose">Dose <span class="text-slate-400">(auto)</span></label>
+                    <input type="text" id="steroid-dose" placeholder="auto-calculated / editable">
+                  </div>
+                  <div>
+                    <label for="steroid-time">Time Given</label>
+                    <input type="time" id="steroid-time">
+                  </div>
+                </div>
+                <div class="mt-2 flex items-center gap-2">
+                  <input type="checkbox" id="steroid-maintenance">
+                  <label for="steroid-maintenance" class="!mb-0 !normal-case !text-[11px] !font-semibold text-slate-600">On maintenance oral steroids? (if so: prednisolone 1-2mg/kg, max 60mg — discuss weaning with respiratory consultant)</label>
+                </div>
+                <p class="text-[10px] text-slate-500 font-semibold mt-1">
+                  Prednisolone 1mg/kg (round up to nearest 5mg): &lt;2yr max 10mg OD | 2-5yr max 20mg OD | &gt;5yr max 30mg OD | ≥12yr max 40mg OD.
+                  Hydrocortisone IV: 4mg/kg 6-hrly (max 100mg/dose) or by age — 1mo-1yr 25mg, 2-4yr 50mg, 5-18yr 100mg, all 6-hrly.
+                </p>
+              </div>
+
+              <!-- Magnesium -->
+              <div class="sub-card">
+                <label class="mb-2 text-sm" style="color: var(--teal-dark);">Magnesium Sulfate IV <span class="text-slate-400 font-normal normal-case">— 1st-line IV bronchodilator (severe/life-threatening, no response to nebulisers)</span></label>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <span class="text-[10px] font-bold uppercase text-slate-500 block mb-1">Given?</span>
+                    <div class="flex gap-4">
+                      <label class="radio-row"><input type="radio" name="mgso4-given" value="Yes"> Yes</label>
+                      <label class="radio-row"><input type="radio" name="mgso4-given" value="No"> No</label>
+                    </div>
+                  </div>
+                  <div>
+                    <span class="text-[10px] font-bold uppercase text-slate-500 block mb-1">Route</span>
+                    <div class="flex gap-4">
+                      <label class="radio-row"><input type="radio" name="mgso4-route" value="IV"> IV</label>
+                      <label class="radio-row"><input type="radio" name="mgso4-route" value="Nebulised"> Nebulised</label>
+                    </div>
+                  </div>
+                  <div>
+                    <label for="mgso4-time">Time Given</label>
+                    <input type="time" id="mgso4-time">
+                  </div>
+                </div>
+                <div class="mt-3">
+                  <label for="mgso4-dose">Dose <span class="text-slate-400">(auto: 40mg/kg over 20 min, max 2g)</span></label>
+                  <input type="text" id="mgso4-dose" placeholder="auto-calculated / editable">
+                </div>
+                <p class="text-[10px] text-slate-500 font-semibold mt-1">Age 2-17yr: 40mg/kg single dose over 20 min (max 2g). Use 50% injection diluted to 10% with 4x volume NaCl 0.9%. Requires cardiac monitoring + BP every 5 min during infusion. If not responding within 15 min → discuss with on-call paediatric consultant, consider second-line IV.</p>
+                <div class="mt-2 flex items-center gap-2">
+                  <input type="checkbox" id="mgso4-not-responding">
+                  <label for="mgso4-not-responding" class="!mb-0 !normal-case !text-[11px] !font-semibold text-red-700">Not responding within 15 min — discussed with on-call paediatric consultant?</label>
+                </div>
+              </div>
+
+              <!-- Second line IV -->
+              <div class="sub-card border-red-200 bg-red-50/40">
+                <label class="mb-2 text-sm text-red-800">Second-Line IV Bronchodilator <span class="text-slate-500 font-normal normal-case">(if magnesium sulfate fails — discuss with consultant)</span></label>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                  <div>
+                    <span class="text-[10px] font-bold uppercase text-slate-500 block mb-1">Second-Line Given?</span>
+                    <div class="flex gap-4">
+                      <label class="radio-row"><input type="radio" name="secondline-given" value="Yes"> Yes</label>
+                      <label class="radio-row"><input type="radio" name="secondline-given" value="No"> No</label>
+                    </div>
+                  </div>
+                  <div>
+                    <span class="text-[10px] font-bold uppercase text-slate-500 block mb-1">Agent</span>
+                    <div class="flex gap-4 flex-wrap">
+                      <label class="radio-row"><input type="radio" name="secondline-agent" value="IV Salbutamol bolus"> IV Salbutamol bolus</label>
+                      <label class="radio-row"><input type="radio" name="secondline-agent" value="IV Aminophylline"> IV Aminophylline</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label for="secondline-dose">Loading/Bolus Dose <span class="text-slate-400">(auto)</span></label>
+                    <input type="text" id="secondline-dose" placeholder="auto-calculated / editable">
+                  </div>
+                  <div>
+                    <label for="secondline-infusion">Maintenance Infusion <span class="text-slate-400">(auto)</span></label>
+                    <input type="text" id="secondline-infusion" placeholder="auto-calculated / editable">
+                  </div>
+                  <div>
+                    <label for="secondline-time">Time Given</label>
+                    <input type="time" id="secondline-time">
+                  </div>
+                </div>
+                <div class="mt-2 flex items-center gap-2">
+                  <input type="checkbox" id="secondline-on-theophylline">
+                  <label for="secondline-on-theophylline" class="!mb-0 !normal-case !text-[11px] !font-semibold text-red-700">Already on theophylline? (DO NOT give aminophylline loading dose if so)</label>
+                </div>
+                <p class="text-[10px] text-slate-500 font-semibold mt-1">
+                  IV Salbutamol bolus over 5 min: &lt;2yr 5mcg/kg (max 250mcg), ≥2yr 15mcg/kg (max 250mcg).<br>
+                  IV Aminophylline loading dose 5mg/kg (max 500mg) — do NOT give if already on theophylline. Maintenance infusion: 1mo-11yr 1mg/kg/hr; 12-17yr 500-700mcg/kg/hr.
+                </p>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="sub-card">
+                  <label class="mb-2">Heliox <span class="text-slate-400 font-normal normal-case">(consultant-level)</span></label>
+                  <div class="flex gap-4">
+                    <label class="radio-row"><input type="radio" name="heliox-amino" value="Yes"> Yes</label>
+                    <label class="radio-row"><input type="radio" name="heliox-amino" value="No"> No</label>
+                  </div>
+                </div>
+                <div class="sub-card">
+                  <label class="mb-2">ITU / PICU Referral Made?</label>
+                  <div class="flex gap-4">
+                    <label class="radio-row"><input type="radio" name="itu-referral" value="Yes"> Yes</label>
+                    <label class="radio-row"><input type="radio" name="itu-referral" value="No"> No</label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Oxygen -->
+              <div class="sub-card">
+                <label class="mb-2 text-sm" style="color: var(--teal-dark);">Oxygen Therapy</label>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                  <div>
+                    <span class="text-[10px] font-bold uppercase text-slate-500 block mb-1">Required?</span>
+                    <div class="flex gap-4">
+                      <label class="radio-row"><input type="radio" name="o2-required" value="Yes"> Yes</label>
+                      <label class="radio-row"><input type="radio" name="o2-required" value="No"> No</label>
+                    </div>
+                  </div>
+                  <div>
+                    <label for="o2-delivery">Delivery</label>
+                    <select id="o2-delivery">
+                      <option value="">Select…</option>
+                      <option>Nasal cannula</option>
+                      <option>Simple face mask</option>
+                      <option>Non-rebreather</option>
+                      <option>High flow</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label for="o2-flow">Flow Rate (L/min)</label>
+                    <input type="number" id="o2-flow" step="0.5" min="0" placeholder="L/min">
+                  </div>
+                  <div>
+                    <label>Target SpO2</label>
+                    <input type="text" value="94-98%" readonly class="bg-slate-100 font-bold">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Monitoring with IV therapies -->
+              <div class="redflag-box">
+                <label class="mb-2 text-red-800">Monitoring Required with IV Therapies</label>
+                <div class="flex flex-col gap-2 mt-1">
+                  <label class="checkbox-row"><input type="checkbox" class="monitor-cb" value="HR + RR every 15-30 min"> HR + RR every 15-30 min</label>
+                  <label class="checkbox-row"><input type="checkbox" class="monitor-cb" value="Continuous SpO2 monitoring"> Continuous SpO2 monitoring</label>
+                  <label class="checkbox-row"><input type="checkbox" class="monitor-cb" value="Continuous cardiac monitoring"> Continuous cardiac monitoring</label>
+                  <label class="checkbox-row"><input type="checkbox" class="monitor-cb" value="Baseline U&E"> Baseline U&amp;E</label>
+                  <label class="checkbox-row"><input type="checkbox" class="monitor-cb" value="Capillary blood gas + lactate"> Capillary blood gas + lactate</label>
+                  <label class="checkbox-row"><input type="checkbox" class="monitor-cb" value="Repeat capillary gas/electrolytes/lactate at least 12-hrly"> Repeat capillary gas/electrolytes/lactate at least 12-hrly</label>
+                </div>
+              </div>
+
+              <div class="bg-slate-100 border border-slate-300 rounded-lg p-3">
+                <p class="text-xs font-bold text-slate-600">ℹ Antibiotics are NOT given routinely in acute wheeze/asthma management.</p>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- SECTION 7: INVESTIGATIONS -->
+          <div id="sec-7" class="section-card scroll-mt-32">
+            <div class="section-header">
+              <span>7. Investigations</span>
+              <span class="subtag">Bloods / Imaging</span>
+            </div>
+            <div class="section-body">
+
+              <div class="bg-slate-100 border border-slate-300 rounded-lg p-3">
+                <p class="text-xs font-bold text-slate-600">ℹ Routine CXR is <u>NOT</u> indicated — only if severe/life-threatening and not improving. Blood gas only if likely to change management.</p>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="sub-card">
+                  <label class="mb-2">CXR Ordered?</label>
+                  <div class="flex gap-4 mb-2">
+                    <label class="radio-row"><input type="radio" name="cxr-ordered" value="Yes"> Yes</label>
+                    <label class="radio-row"><input type="radio" name="cxr-ordered" value="No"> No</label>
+                  </div>
+                  <input type="text" id="cxr-result" placeholder="Result…">
+                </div>
+                <div class="sub-card">
+                  <label class="mb-2">Blood Cultures?</label>
+                  <div class="flex gap-4">
+                    <label class="radio-row"><input type="radio" name="bloodcultures" value="Yes"> Yes</label>
+                    <label class="radio-row"><input type="radio" name="bloodcultures" value="No"> No</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="sub-card">
+                <label class="mb-2">Blood Gas?</label>
+                <div class="flex gap-4 mb-3">
+                  <label class="radio-row"><input type="radio" name="bloodgas" value="Yes"> Yes</label>
+                  <label class="radio-row"><input type="radio" name="bloodgas" value="No"> No</label>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+                  <div><label for="gas-ph">pH</label><input type="text" id="gas-ph" placeholder="7.35-7.45"></div>
+                  <div><label for="gas-pco2">pCO2</label><input type="text" id="gas-pco2" placeholder="kPa"></div>
+                  <div><label for="gas-po2">pO2</label><input type="text" id="gas-po2" placeholder="kPa"></div>
+                  <div><label for="gas-hco3">HCO3</label><input type="text" id="gas-hco3" placeholder="mmol/L"></div>
+                  <div><label for="gas-lactate">Lactate</label><input type="text" id="gas-lactate" placeholder="mmol/L"></div>
+                </div>
+              </div>
+
+              <div class="sub-card">
+                <label class="mb-2">FBC, CRP?</label>
+                <div class="flex gap-4">
+                  <label class="radio-row"><input type="radio" name="fbc-crp" value="Yes"> Yes</label>
+                  <label class="radio-row"><input type="radio" name="fbc-crp" value="No"> No</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION 8: RESPONSE & REASSESSMENT -->
+          <div id="sec-8" class="section-card scroll-mt-32">
+            <div class="section-header">
+              <span>8. Response & Reassessment</span>
+              <span class="subtag">Post-Treatment</span>
+            </div>
+            <div class="section-body">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label for="reassess-spo2">Reassessment SpO2 (%)</label>
+                  <input type="number" id="reassess-spo2" min="0" max="100" placeholder="%">
+                </div>
+                <div>
+                  <label for="reassess-rr">Reassessment RR</label>
+                  <input type="number" id="reassess-rr" min="0" placeholder="breaths/min">
+                </div>
+                <div>
+                  <label for="reassess-hr">Reassessment HR</label>
+                  <input type="number" id="reassess-hr" min="0" placeholder="bpm">
+                </div>
+              </div>
+              <div class="sub-card">
+                <label class="mb-2">Response</label>
+                <div class="flex gap-4 flex-wrap">
+                  <label class="radio-row"><input type="radio" name="response" value="Good"> Good</label>
+                  <label class="radio-row"><input type="radio" name="response" value="Partial"> Partial</label>
+                  <label class="radio-row"><input type="radio" name="response" value="Poor"> Poor</label>
+                </div>
+              </div>
+              <div>
+                <label for="severity-post">Severity Post-Treatment</label>
+                <select id="severity-post">
+                  <option value="">Select…</option>
+                  <option value="Mild/Moderate">Mild/Moderate</option>
+                  <option value="Severe">Severe</option>
+                  <option value="Life-threatening">Life-threatening</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION 9: DISPOSITION -->
+          <div id="sec-9" class="section-card scroll-mt-32">
+            <div class="section-header">
+              <span>9. Disposition</span>
+              <span class="subtag">Outcome & Follow-up</span>
+            </div>
+            <div class="section-body">
+
+              <div class="sub-card">
+                <label class="mb-2">Admission Criteria Present?</label>
+                <div class="flex gap-4">
+                  <label class="radio-row"><input type="radio" name="admission-criteria" value="Yes"> Yes</label>
+                  <label class="radio-row"><input type="radio" name="admission-criteria" value="No"> No</label>
+                </div>
+                <p id="admission-autoflag" class="hidden mt-2 text-xs font-black text-red-700 uppercase">⚠ Auto-flagged: severity is severe/life-threatening</p>
+              </div>
+
+              <div>
+                <label for="disposition">Disposition</label>
+                <select id="disposition">
+                  <option value="">Select…</option>
+                  <option>Discharge home</option>
+                  <option>Observation unit</option>
+                  <option>Paediatric ward</option>
+                  <option>HDU</option>
+                  <option>PICU</option>
+                  <option>Other</option>
+                </select>
+              </div>
+
+              <div class="sub-card">
+                <label class="mb-2">Discharge Criteria Met (all must be met)</label>
+                <div class="flex flex-col gap-2">
+                  <label class="checkbox-row"><input type="checkbox" class="dc-cb" value="SpO2 ≥94% in air"> SpO2 ≥94% in air</label>
+                  <label class="checkbox-row"><input type="checkbox" class="dc-cb" value="RR within age-normal range (<5yr <40, 5-11yr <30, 12-18yr <25)"> RR within age-normal range (&lt;5yr &lt;40, 5-11yr &lt;30, 12-18yr &lt;25)</label>
+                  <label class="checkbox-row"><input type="checkbox" class="dc-cb" value="HR within age-normal range (<5yr <140, 5-11yr <125, 12-18yr <110)"> HR within age-normal range (&lt;5yr &lt;140, 5-11yr &lt;125, 12-18yr &lt;110)</label>
+                  <label class="checkbox-row"><input type="checkbox" class="dc-cb" value="Peak flow ≥75% predicted/best (age >5yr)"> Peak flow ≥75% predicted/best (age &gt;5yr)</label>
+                  <label class="checkbox-row"><input type="checkbox" class="dc-cb" value="Stable on 4-hrly treatment"> Stable on 4-hrly treatment</label>
+                  <label class="checkbox-row"><input type="checkbox" class="dc-cb" value="Significant improvement, stable for 4 hours"> Significant improvement, stable for 4 hours</label>
+                  <label class="checkbox-row"><input type="checkbox" class="dc-cb" value="Parents understand inhaler use"> Parents understand inhaler use</label>
+                  <label class="checkbox-row"><input type="checkbox" class="dc-cb" value="Written PAAP given"> Written PAAP given</label>
+                  <label class="checkbox-row"><input type="checkbox" class="dc-cb" value="Discharge/weaning information leaflet given"> Discharge/weaning information leaflet given</label>
+                  <label class="checkbox-row"><input type="checkbox" class="dc-cb" value="Parents know signs of deterioration"> Parents know signs of deterioration</label>
+                </div>
+              </div>
+
+              <div class="sub-card">
+                <label class="mb-2">Discharge Medications</label>
+                <div class="flex flex-col gap-2">
+                  <label class="checkbox-row"><input type="checkbox" class="dm-cb" value="Salbutamol course given"> Salbutamol course given</label>
+                  <label class="checkbox-row"><input type="checkbox" class="dm-cb" value="Prednisolone course"> Prednisolone course</label>
+                  <label class="checkbox-row"><input type="checkbox" class="dm-cb" value="Increase preventer step"> Increase preventer step</label>
+                  <label class="checkbox-row"><input type="checkbox" class="dm-cb" value="Refer to asthma nurse"> Refer to asthma nurse</label>
+                  <label class="checkbox-row"><input type="checkbox" class="dm-cb" value="GP follow-up"> GP follow-up</label>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="mb-2">Asthma Action Plan Given?</label>
+                  <div class="flex gap-4">
+                    <label class="radio-row"><input type="radio" name="action-plan" value="Yes"> Yes</label>
+                    <label class="radio-row"><input type="radio" name="action-plan" value="No"> No</label>
+                  </div>
+                </div>
+                <div>
+                  <label class="mb-2">Safety Netting Advice Given?</label>
+                  <div class="flex gap-4">
+                    <label class="radio-row"><input type="radio" name="safety-netting" value="Yes"> Yes</label>
+                    <label class="radio-row"><input type="radio" name="safety-netting" value="No"> No</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label for="responsible-clinician">Responsible Clinician</label>
+                  <input type="text" id="responsible-clinician" placeholder="Name / grade">
+                </div>
+                <div>
+                  <label for="senior-review">Senior Review By</label>
+                  <input type="text" id="senior-review" placeholder="Name / grade">
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </form>
+      </div>
+
+      <!-- EPR NOTE PANEL -->
+      <div id="epr-col" class="no-print" style="position:sticky; top:96px; align-self:start; max-height:calc(100vh - 110px); overflow-y:auto;">
+        <div class="space-y-4">
+          <div class="bg-white p-4 rounded-xl shadow-lg border border-slate-300">
+            <div class="flex justify-between items-center mb-3">
+              <h2 class="text-sm font-bold text-slate-700 uppercase tracking-wide">EPR Note</h2>
+              <button type="button" id="copy-rich-text-btn-panel" onclick="copyRichText()" class="px-3 py-1 text-xs font-bold bg-blue-600 text-white rounded hover:bg-blue-700 transition shadow-sm">
+                Copy Rich Text
+              </button>
+            </div>
+            <div id="epr-output" class="rich-output" contenteditable="true"></div>
+          </div>
+
+          <button type="button" id="print-btn-panel" class="w-full btn btn-navy py-3 text-sm shadow-lg">
+            🖨️ Print Medical Record
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="no-print text-center text-[10px] text-slate-400 py-4">
+    Wheeze Assessment — Children v1.0 · BTS/SIGN British Guideline on Asthma (2024) · NICE NG80 · RCPCH · Partners in Paediatrics 2025-28 (Asthma Acute Management, pp.44-49) · For clinical decision support only — does not replace clinical judgement.
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
