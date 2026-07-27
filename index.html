@@ -107,6 +107,50 @@
     #epr-col { display:none !important; }
   }
 </style>
+<style>
+/* ── SharePoint-safe two-column layout ───────────────────── */
+.app-grid {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 1.25rem;
+    align-items: start;
+}
+.app-main-col {
+    min-width: 0;
+}
+.app-epr-col {
+    position: sticky;
+    top: 72px;
+    max-height: calc(100vh - 82px);
+    overflow-y: auto;
+}
+@media print {
+    .app-epr-col { display: none !important; }
+    .app-grid { display: block !important; }
+}
+</style>
+<style>
+/* ── SharePoint-safe two-column layout ───────────────────── */
+.app-grid {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 1.25rem;
+    align-items: start;
+}
+.app-main-col {
+    min-width: 0;
+}
+.app-epr-col {
+    position: sticky;
+    top: 72px;
+    max-height: calc(100vh - 82px);
+    overflow-y: auto;
+}
+@media print {
+    .app-epr-col { display: none !important; }
+    .app-grid { display: block !important; }
+}
+</style>
 </head>
 <body class="bg-slate-100 text-slate-900 antialiased pb-16">
 
@@ -148,9 +192,9 @@
   </header>
 
   <main class="max-w-[1400px] mx-auto px-4 py-6">
-    <div id="app-grid" style="display:grid; grid-template-columns: 1fr 320px; gap:1.25rem; align-items:start;">
+    <div class="app-grid">
 
-      <div style="min-width:0; display:flex; flex-direction:column; gap:1.5rem;">
+      <div class="app-main-col">
 
         <div class="hidden print-header text-center border-b-2 pb-3 mb-2" style="border-color: var(--navy);">
           <h1 class="text-2xl font-black" style="color: var(--navy);">Wheeze Assessment — Children</h1>
@@ -987,7 +1031,7 @@
       </div>
 
       <!-- EPR NOTE PANEL -->
-      <div id="epr-col" class="no-print" style="position:sticky; top:96px; align-self:start; max-height:calc(100vh - 110px); overflow-y:auto;">
+      <div id="epr-col" class="app-epr-col no-print">
         <div class="space-y-4">
           <div class="bg-white p-4 rounded-xl shadow-lg border border-slate-300">
             <div class="flex justify-between items-center mb-3">
