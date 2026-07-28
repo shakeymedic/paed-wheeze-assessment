@@ -634,272 +634,248 @@ document.addEventListener('DOMContentLoaded', () => {
     return el ? el.value : '';
   }
 
+  function ph(text) {
+    return `<span style="color:#94a3b8">[${text || 'not recorded'}]</span>`;
+  }
+  function fv(v, placeholder) {
+    return (v !== undefined && v !== null && v !== '') ? esc(v) : ph(placeholder);
+  }
+  function heading(text) {
+    return `<b style="font-weight:bold;">${text}</b>`;
+  }
+
   function generateEPRNote() {
     const today = new Date();
     const dateStr = today.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
     const timeStr = today.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
 
     let lines = [];
-    lines.push(`<b>PAEDIATRIC WHEEZE ASSESSMENT — ${dateStr} ${timeStr}</b>`);
+    lines.push(`<b style="font-weight:bold;">PAEDIATRIC WHEEZE ASSESSMENT — ${dateStr} ${timeStr}</b>`);
     lines.push('');
 
     // Patient details
-    lines.push('<b>PATIENT DETAILS</b>');
-    const name = $('pt-name').value || '—';
-    const dob = $('pt-dob').value || '—';
-    const age = $('pt-age').value || '—';
-    const weight = $('pt-weight').value ? `${$('pt-weight').value} kg` : '—';
-    const gender = $('pt-gender').value || '—';
-    const allergy = $('pt-allergy').value || 'Not documented';
-    lines.push(`Name: ${esc(name)} | DOB: ${esc(dob)} | Age: ${esc(age)} | Weight: ${esc(weight)} | Gender: ${esc(gender)}`);
-    lines.push(`Allergy status: ${esc(allergy)}`);
+    lines.push(heading('PATIENT DETAILS'));
+    const name = $('pt-name').value;
+    const dob = $('pt-dob').value;
+    const age = $('pt-age').value;
+    const weight = $('pt-weight').value ? `${$('pt-weight').value} kg` : '';
+    const gender = $('pt-gender').value;
+    const allergy = $('pt-allergy').value;
+    lines.push(`Name: ${fv(name)} | DOB: ${fv(dob)} | Age: ${fv(age)} | Weight: ${fv(weight)} | Gender: ${fv(gender)}`);
 
     const knownAsthmatic = radioVal('known-asthmatic');
+    let asthmaLine = `Known asthmatic: ${fv(knownAsthmatic)}`;
     if (knownAsthmatic === 'Yes') {
-      const yrs = $('asthma-years').value || '—';
-      const prev = $('usual-preventer').value || '—';
-      const rel = $('usual-reliever').value || '—';
-      lines.push(`Known asthmatic: Yes (${esc(yrs)}) | Preventer: ${esc(prev)} | Reliever: ${esc(rel)}`);
-    } else {
-      lines.push('Known asthmatic: No');
+      const yrs = $('asthma-years').value;
+      asthmaLine += ` (${fv(yrs, 'duration not recorded')})`;
     }
-
-    const meds = $('current-meds').value;
-    if (meds) lines.push(`Current medications: ${esc(meds)}`);
-    const pc = $('presenting-complaint').value;
-    if (pc) lines.push(`Presenting complaint: ${esc(pc)}`);
+    lines.push(asthmaLine);
+    const prev = $('usual-preventer').value;
+    const rel = $('usual-reliever').value;
+    lines.push(`Usual preventer: ${fv(prev)} | Usual reliever: ${fv(rel)}`);
+    lines.push(`Allergies: ${fv(allergy, 'not documented')} | Current medications: ${fv($('current-meds').value, 'none recorded')}`);
     lines.push('');
 
     // History
-    lines.push('<b>HISTORY</b>');
-    const durationSx = $('duration-symptoms').value || '—';
-    const onset = $('time-onset').value || '—';
-    const urti = radioVal('preceding-urti') || '—';
-    lines.push(`Duration of symptoms: ${esc(durationSx)} | Onset: ${esc(onset)} | Preceding URTI: ${esc(urti)}`);
+    lines.push(heading('HISTORY'));
+    const durationSx = $('duration-symptoms').value;
+    const onset = $('time-onset').value;
+    lines.push(`Duration: ${fv(durationSx)} | Onset: ${fv(onset)}`);
 
+    const urti = radioVal('preceding-urti');
     const triggers = getCheckedValues('.trigger-cb');
-    let triggerLine = triggers.length ? triggers.join(', ') : 'None documented';
+    let triggerLine = triggers.length ? triggers.join(', ') : '';
     if (triggers.includes('Other') && $('trigger-other-text').value) {
       triggerLine = triggerLine.replace('Other', `Other (${$('trigger-other-text').value})`);
     }
-    lines.push(`Trigger(s): ${esc(triggerLine)}`);
+    lines.push(`Preceding URTI: ${fv(urti)} | Trigger: ${triggerLine ? esc(triggerLine) : ph('not identified')}`);
 
     const prevVisits = radioVal('prev-visits');
     let prevVisitsLine = prevVisits === 'Yes'
-      ? `Yes (${$('prev-visits-count').value || '?'} in last 12 months)`
-      : (prevVisits === 'No' ? 'No' : '—');
-    lines.push(`Previous A&E/hospital visits for wheeze: ${esc(prevVisitsLine)}`);
+      ? `Yes (${fv($('prev-visits-count').value, '? doses')} in last 12 months)`
+      : fv(prevVisits);
+    lines.push(`Previous ED/hospital visits (last 12 months): ${prevVisitsLine}`);
 
     const prevItu = radioVal('prev-itu');
-    lines.push(`Previous ITU admission/ventilation: ${prevItu === 'Yes' ? '<b>YES — RED FLAG</b>' : (prevItu || '—')}`);
+    const prevItuLine = prevItu === 'Yes'
+      ? `<span style="color:#dc2626;font-weight:bold">⚠️ POSITIVE: Yes — RED FLAG</span>`
+      : fv(prevItu);
+    lines.push(`Previous ITU/ventilation: ${prevItuLine}`);
 
     const relieverPrior = radioVal('reliever-prior');
     let relieverLine = relieverPrior === 'Yes'
-      ? `Yes (${$('reliever-doses').value || '?'} doses in last hour)`
-      : (relieverPrior === 'No' ? 'No' : '—');
-    lines.push(`Reliever used prior to attendance: ${esc(relieverLine)}`);
+      ? `Yes (${fv($('reliever-doses').value, '? doses')} in last hour)`
+      : fv(relieverPrior);
+    lines.push(`Reliever doses before attendance: ${relieverLine}`);
 
-    const adherence = radioVal('preventer-adherence') || '—';
-    lines.push(`Preventer adherence: ${esc(adherence)}`);
-
-    const smoking = radioVal('household-smoking') || '—';
-    lines.push(`Smoking in household: ${esc(smoking)}`);
-
-    const otherSym = getCheckedValues('.othersym-cb');
-    lines.push(`Other symptoms: ${otherSym.length ? esc(otherSym.join(', ')) : 'None'}`);
+    const adherence = radioVal('preventer-adherence');
+    lines.push(`Preventer adherence: ${fv(adherence)}`);
     lines.push('');
 
     // Severity
     const worstSeverity = calculateSeverity();
-    lines.push('<b>SEVERITY</b> (Partners in Paediatrics 2025-28)');
-    if (worstSeverity) {
-      lines.push(`<b>SEVERITY: ${SEVERITY_LABEL[worstSeverity]}</b>`);
-      const checkedCriteria = Array.from(document.querySelectorAll('.sev-cb'))
-        .filter(cb => cb.checked)
-        .map(cb => cb.value);
-      if (checkedCriteria.length) {
-        lines.push(`Criteria met: ${esc(checkedCriteria.join('; '))}`);
-      }
-    } else {
-      lines.push('<b>SEVERITY: NOT YET ASSESSED</b>');
-    }
-    lines.push('');
+    lines.push(`${heading('SEVERITY ASSESSMENT')} — CURRENT: ${(() => {
+      if (worstSeverity === 'mildmod') return '<span style="color:#16a34a;font-weight:bold">MILD/MODERATE</span>';
+      if (worstSeverity === 'severe') return '<span style="color:#d97706;font-weight:bold">SEVERE</span>';
+      if (worstSeverity === 'lifethreat') return '<span style="color:#dc2626;font-weight:bold">LIFE-THREATENING</span>';
+      return ph('not assessed');
+    })()}`);
+    const spo2 = $('ex-spo2').value;
+    const rr = $('ex-rr').value;
+    const hr = $('ex-hr').value;
+    const temp = $('ex-temp').value;
+    const pefr = $('ex-pefr').value;
+    lines.push(`SpO2: ${fv(spo2)}% | RR: ${fv(rr)}/min | HR: ${fv(hr)}/min | Temp: ${fv(temp)}°C`);
+    lines.push(`PEFR: ${pefr ? esc(pefr) + '% predicted/best' : ph('not recorded/not able')}`);
 
-    // Examination
-    lines.push('<b>EXAMINATION</b>');
-    const spo2 = $('ex-spo2').value ? `${$('ex-spo2').value}%` : '—';
-    const rr = $('ex-rr').value || '—';
-    const hr = $('ex-hr').value || '—';
-    const temp = $('ex-temp').value ? `${$('ex-temp').value}°C` : '—';
-    const pefr = $('ex-pefr').value ? `${$('ex-pefr').value}%` : 'not able';
-    lines.push(`SpO2: ${esc(spo2)} | RR: ${esc(rr)} | HR: ${esc(hr)} | Temp: ${esc(temp)} | PEFR: ${esc(pefr)}`);
+    const wob = radioVal('work-breathing');
+    lines.push(`Work of breathing: ${fv(wob)}`);
 
-    const wheeze = radioVal('ausc-wheeze') || '—';
-    const rae = radioVal('ausc-rae') || '—';
-    const crackles = radioVal('ausc-crackles') || '—';
-    const silent = radioVal('ausc-silent');
-    lines.push(`Auscultation: Wheeze — ${esc(wheeze)}; Reduced air entry — ${esc(rae)}; Crackles — ${esc(crackles)}; Silent chest — ${silent === 'Yes' ? '<b>YES</b>' : (silent || '—')}`);
+    const subcostal = $('ex-subcostal').checked ? '<span style="color:#dc2626;font-weight:bold">Present</span>' : '<span style="color:#16a34a">Absent</span>';
+    const intercostal = $('ex-intercostal').checked ? '<span style="color:#dc2626;font-weight:bold">Present</span>' : '<span style="color:#16a34a">Absent</span>';
+    const trachealTug = $('ex-trachealtug').checked ? '<span style="color:#dc2626;font-weight:bold">Present</span>' : '<span style="color:#16a34a">Absent</span>';
+    lines.push(`Recession: subcostal ${subcostal} | intercostal ${intercostal} | tracheal tug ${trachealTug}`);
 
-    const wob = radioVal('work-breathing') || '—';
-    lines.push(`Work of breathing: ${esc(wob)}`);
+    const rae = radioVal('ausc-rae');
+    const wheeze = radioVal('ausc-wheeze');
+    lines.push(`Air entry: ${fv(rae)} | Wheeze: ${fv(wheeze)}`);
 
-    const signs = [];
-    if ($('ex-subcostal').checked) signs.push('Subcostal recession');
-    if ($('ex-intercostal').checked) signs.push('Intercostal recession');
-    if ($('ex-trachealtug').checked) signs.push('Tracheal tug');
-    if ($('ex-nasalflare').checked) signs.push('Nasal flaring / flaring alae nasi');
-    if ($('ex-headbob').checked) signs.push('Head bobbing');
-    if ($('ex-accessory').checked) signs.push('Accessory muscle use');
-    if ($('ex-cyanosis').checked) signs.push('CYANOSIS');
-    lines.push(`Signs of respiratory distress: ${signs.length ? esc(signs.join(', ')) : 'None documented'}`);
+    const cyanosis = $('ex-cyanosis').checked;
+    lines.push(`Cyanosis: ${cyanosis ? '<span style="color:#dc2626;font-weight:bold">⚠️ PRESENT</span>' : '<span style="color:#16a34a">Not present</span>'}`);
     lines.push('');
 
     // Differential
-    lines.push('<b>DIFFERENTIAL DIAGNOSIS</b>');
+    lines.push(heading('DIFFERENTIAL DIAGNOSIS'));
     let differential = radioVal('differential');
     if (differential === 'Other' && $('differential-other-text').value) {
       differential = `Other — ${$('differential-other-text').value}`;
     }
-    lines.push(`Most likely: ${esc(differential || 'Not yet determined')}`);
-    const diffNotes = $('differential-notes').value;
-    if (diffNotes) lines.push(`Notes: ${esc(diffNotes)}`);
+    lines.push(`Most likely: ${fv(differential, 'not yet determined')}`);
     lines.push('');
 
     // Treatment
-    lines.push('<b>TREATMENT GIVEN</b>');
+    lines.push(heading('TREATMENT GIVEN'));
     const salbRoute = radioVal('salb-route');
     if (salbRoute) {
-      const salbDose = $('salb-dose').value || '—';
-      const salbTime = $('salb-time').value || '—';
-      const salbResp = radioVal('salb-response') || '—';
-      const salbRepeat = $('salb-repeat').value || '0';
-      const salbFreq = radioVal('salb-freq') || '—';
-      lines.push(`Salbutamol: ${esc(salbRoute)}, ${esc(salbDose)}, first dose at ${esc(salbTime)}. Response: ${esc(salbResp)}. Repeat doses: ${esc(salbRepeat)} (${esc(salbFreq)}).`);
+      const salbDose = $('salb-dose').value;
+      const salbTime = $('salb-time').value;
+      const salbResp = radioVal('salb-response');
+      const salbRepeat = $('salb-repeat').value;
+      const salbFreq = radioVal('salb-freq');
+      lines.push(`Salbutamol: ${fv(salbDose)} via ${fv(salbRoute)} at ${fv(salbTime)} — response: ${fv(salbResp)}`);
+      lines.push(`&nbsp;&nbsp;Repeat doses: ${fv(salbRepeat, '0')} | Frequency: ${fv(salbFreq)}`);
+    } else {
+      lines.push(`Salbutamol: ${ph('not recorded')}`);
+      lines.push(`&nbsp;&nbsp;Repeat doses: ${ph('not recorded')} | Frequency: ${ph('not recorded')}`);
     }
 
     const ipraGiven = radioVal('ipra-given');
     if (ipraGiven === 'Yes') {
-      lines.push(`Ipratropium bromide: given, ${esc($('ipra-dose').value || '—')} at ${esc($('ipra-time').value || '—')}.`);
-    } else if (ipraGiven === 'No') {
-      lines.push('Ipratropium bromide: not given.');
+      lines.push(`Ipratropium bromide: given — ${fv($('ipra-dose').value)}`);
+    } else {
+      lines.push(`Ipratropium bromide: ${fv(ipraGiven, 'not given')}`);
     }
 
     const steroidGiven = radioVal('steroid-given');
     if (steroidGiven === 'Yes') {
-      const route = radioVal('steroid-route') || '—';
-      const drug = $('steroid-drug').value || '—';
-      const dose = $('steroid-dose').value || '—';
-      const time = $('steroid-time').value || '—';
-      const maintNote = $('steroid-maintenance').checked ? ' (on maintenance steroids)' : '';
-      lines.push(`Steroids: ${esc(drug)} ${esc(dose)} (${esc(route)}) at ${esc(time)}${maintNote}.`);
-    } else if (steroidGiven === 'No') {
-      lines.push('Steroids: not given.');
+      const route = radioVal('steroid-route');
+      const drug = $('steroid-drug').value;
+      const dose = $('steroid-dose').value;
+      const time = $('steroid-time').value;
+      lines.push(`Steroids: given — ${fv(drug)}, ${fv(dose)}, ${fv(route)}, ${fv(time)}`);
+    } else {
+      lines.push(`Steroids: ${fv(steroidGiven, 'not given')}`);
     }
 
     const mgso4Given = radioVal('mgso4-given');
     if (mgso4Given === 'Yes') {
-      const route = radioVal('mgso4-route') || '—';
-      const dose = $('mgso4-dose').value || '—';
-      const time = $('mgso4-time').value || '—';
-      lines.push(`Magnesium sulfate: given (${esc(route)}), ${esc(dose)} at ${esc(time)}.`);
+      const route = radioVal('mgso4-route');
+      const dose = $('mgso4-dose').value;
+      const time = $('mgso4-time').value;
+      let mgLine = `Magnesium sulfate IV: given — ${fv(dose)} (${fv(route)}) at ${fv(time)}`;
       if ($('mgso4-not-responding').checked) {
-        lines.push('<b>Not responding within 15 min — discussed with on-call paediatric consultant.</b>');
+        mgLine += ` — <span style="color:#dc2626;font-weight:bold">⚠️ Not responding within 15 min, discussed with on-call paediatric consultant</span>`;
       }
-    } else if (mgso4Given === 'No') {
-      lines.push('Magnesium sulfate: not given.');
+      lines.push(mgLine);
+    } else {
+      lines.push(`Magnesium sulfate IV: ${fv(mgso4Given, 'not given')}`);
     }
 
     const secondLineGiven = radioVal('secondline-given');
     if (secondLineGiven === 'Yes') {
-      const agent = radioVal('secondline-agent') || '—';
-      const dose = $('secondline-dose').value || '—';
-      const infusion = $('secondline-infusion').value || '—';
-      const time = $('secondline-time').value || '—';
-      lines.push(`<b>Second-line IV bronchodilator:</b> ${esc(agent)} — ${esc(dose)}; maintenance: ${esc(infusion)}; given at ${esc(time)}.`);
-    } else if (secondLineGiven === 'No') {
-      lines.push('Second-line IV bronchodilator: not given.');
+      const agent = radioVal('secondline-agent');
+      const dose = $('secondline-dose').value;
+      lines.push(`Second-line IV: given — ${fv(agent)}, ${fv(dose)}`);
+    } else {
+      lines.push(`Second-line IV: ${fv(secondLineGiven, 'not given')}`);
     }
-
-    const heliox = radioVal('heliox-amino');
-    if (heliox) lines.push(`Heliox (consultant-level): ${esc(heliox)}`);
-    const itu = radioVal('itu-referral');
-    if (itu) lines.push(`ITU/PICU referral made: ${itu === 'Yes' ? '<b>YES</b>' : itu}`);
 
     const o2Required = radioVal('o2-required');
     if (o2Required === 'Yes') {
-      const delivery = $('o2-delivery').value || '—';
-      const flow = $('o2-flow').value ? `${$('o2-flow').value} L/min` : '—';
-      lines.push(`Oxygen: ${esc(delivery)}, ${esc(flow)}, target SpO2 94-98%.`);
-    } else if (o2Required === 'No') {
-      lines.push('Oxygen: not required.');
+      const delivery = $('o2-delivery').value;
+      const flow = $('o2-flow').value ? `${$('o2-flow').value} L/min` : '';
+      lines.push(`Oxygen: required — ${fv(delivery)}, ${fv(flow, 'flow not recorded')}`);
+    } else {
+      lines.push(`Oxygen: ${fv(o2Required, 'not required')}`);
     }
-
-    const monitors = getCheckedValues('.monitor-cb');
-    if (monitors.length) {
-      lines.push(`Monitoring (IV therapies): ${esc(monitors.join(', '))}.`);
-    }
-    lines.push('Note: Antibiotics not given routinely.');
     lines.push('');
 
     // Investigations
-    lines.push('<b>INVESTIGATIONS</b>');
+    lines.push(heading('INVESTIGATIONS'));
     const cxr = radioVal('cxr-ordered');
+    let cxrLine;
     if (cxr === 'Yes') {
-      lines.push(`CXR: ordered${$('cxr-result').value ? ` — ${esc($('cxr-result').value)}` : ', result pending'}.`);
-    } else if (cxr === 'No') {
-      lines.push('CXR: not ordered (not routinely indicated unless severe/life-threatening and not improving).');
+      cxrLine = `Ordered${$('cxr-result').value ? ' — ' + esc($('cxr-result').value) : ' — result pending'}`;
+    } else {
+      cxrLine = fv(cxr, 'not ordered');
     }
     const gas = radioVal('bloodgas');
+    let gasLine;
     if (gas === 'Yes') {
-      const ph = $('gas-ph').value || '—';
-      const pco2 = $('gas-pco2').value || '—';
-      const po2 = $('gas-po2').value || '—';
-      const hco3 = $('gas-hco3').value || '—';
-      const lactate = $('gas-lactate').value || '—';
-      lines.push(`Blood gas: pH ${esc(ph)}, pCO2 ${esc(pco2)}, pO2 ${esc(po2)}, HCO3 ${esc(hco3)}, lactate ${esc(lactate)}.`);
-    } else if (gas === 'No') {
-      lines.push('Blood gas: not performed.');
+      const gph = $('gas-ph').value;
+      const pco2 = $('gas-pco2').value;
+      const po2 = $('gas-po2').value;
+      const hco3 = $('gas-hco3').value;
+      const lactate = $('gas-lactate').value;
+      gasLine = `pH ${fv(gph)}, pCO2 ${fv(pco2)}, pO2 ${fv(po2)}, HCO3 ${fv(hco3)}, lactate ${fv(lactate)}`;
+    } else {
+      gasLine = fv(gas, 'not performed');
     }
-    const cultures = radioVal('bloodcultures');
-    if (cultures) lines.push(`Blood cultures: ${esc(cultures)}`);
     const fbccrp = radioVal('fbc-crp');
-    if (fbccrp) lines.push(`FBC/CRP: ${esc(fbccrp)}`);
+    lines.push(`CXR: ${cxrLine} | Blood gas: ${gasLine} | FBC/CRP: ${fv(fbccrp)}`);
     lines.push('');
 
-    // Response
-    lines.push('<b>RESPONSE & REASSESSMENT</b>');
-    const rSpo2 = $('reassess-spo2').value ? `${$('reassess-spo2').value}%` : '—';
-    const rRR = $('reassess-rr').value || '—';
-    const rHR = $('reassess-hr').value || '—';
-    lines.push(`Post-treatment: SpO2 ${esc(rSpo2)}, RR ${esc(rRR)}, HR ${esc(rHR)}.`);
+    // Post-treatment reassessment
+    lines.push(heading('POST-TREATMENT REASSESSMENT'));
+    const rSpo2 = $('reassess-spo2').value;
+    const rRR = $('reassess-rr').value;
+    const rHR = $('reassess-hr').value;
+    lines.push(`SpO2: ${fv(rSpo2)}% | RR: ${fv(rRR)} | HR: ${fv(rHR)}`);
     const response = radioVal('response');
-    if (response) lines.push(`Response to treatment: ${esc(response)}`);
     const severityPost = $('severity-post').value;
-    if (severityPost) lines.push(`Severity post-treatment: ${esc(severityPost)}`);
+    lines.push(`Response: ${fv(response)} | Post-treatment severity: ${fv(severityPost)}`);
     lines.push('');
 
     // Disposition
-    lines.push('<b>DISPOSITION & FOLLOW-UP</b>');
+    lines.push(heading('DISPOSITION'));
     const admissionCriteria = radioVal('admission-criteria');
-    if (admissionCriteria) lines.push(`Admission criteria present: ${esc(admissionCriteria)}`);
     const disposition = $('disposition').value;
-    if (disposition) lines.push(`Disposition: ${esc(disposition)}`);
+    lines.push(`Admission criteria: ${fv(admissionCriteria)} | Disposition: ${fv(disposition)}`);
 
     const dcMet = getCheckedValues('.dc-cb');
-    if (dcMet.length) lines.push(`Discharge criteria met: ${esc(dcMet.join(', '))}`);
+    lines.push(`Discharge criteria met: ${dcMet.length ? esc(dcMet.join(', ')) : ph('N/A')}`);
 
     const dischargeMeds = getCheckedValues('.dm-cb');
-    if (dischargeMeds.length) lines.push(`Discharge medications/plan: ${esc(dischargeMeds.join(', '))}`);
+    lines.push(`Discharge medications: ${dischargeMeds.length ? esc(dischargeMeds.join(', ')) : ph('not recorded')}`);
 
     const actionPlan = radioVal('action-plan');
-    if (actionPlan) lines.push(`Asthma action plan given: ${esc(actionPlan)}`);
     const safetyNet = radioVal('safety-netting');
-    if (safetyNet) lines.push(`Safety netting advice given: ${esc(safetyNet)}`);
+    lines.push(`Asthma action plan given: ${fv(actionPlan)} | Safety netting: ${fv(safetyNet)}`);
+    lines.push(`GP follow-up within 2 working days: ${dischargeMeds.includes('GP follow-up') ? '<span style="color:#16a34a">Arranged</span>' : ph('not recorded')}`);
 
     const clinician = $('responsible-clinician').value;
-    if (clinician) lines.push(`Responsible clinician: ${esc(clinician)}`);
     const senior = $('senior-review').value;
-    if (senior) lines.push(`Senior review by: ${esc(senior)}`);
+    lines.push(`Responsible clinician: ${fv(clinician)} | Senior review: ${fv(senior)}`);
 
     return lines.join('<br>');
   }
