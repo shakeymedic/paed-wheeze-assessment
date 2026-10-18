@@ -47,7 +47,7 @@ function copyRichText() {
 
 // ============================================================
 // Wheeze Assessment — Children | script.js
-// BTS/SIGN British Guideline on Asthma (2024) / NICE NG80
+// BTS/SIGN British Guideline on Asthma (2024) / BTS/NICE/SIGN NG245
 // Partners in Paediatrics 2025-28 — Asthma Acute Management pp.44-49
 // ============================================================
 
